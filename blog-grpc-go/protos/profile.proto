@@ -1,0 +1,9 @@
+syntax ="proto3";
+
+package profile;
+option go_package="profilepb;profilepb";
+
+message Profile {
+string name =1;
+
+}

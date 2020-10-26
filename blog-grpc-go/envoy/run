@@ -1,0 +1,3 @@
+echo ----starting envoy-----
+envoy --config-path envoy.yaml
+
