@@ -5,7 +5,7 @@ import "./App.css";
 import { CreateBlog, ReadBlog,UpdateBlog ,DeleteBlog} from "./methods/blog";
 import { blogID } from "./methods/blog";
 function App() {
-  console.log("blogid from main", blogID);
+  // console.log("blogid from main", blogID);
   return (
     <div className="App">
       <header className="App-header">

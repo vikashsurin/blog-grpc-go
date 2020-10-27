@@ -61,7 +61,7 @@ func main() {
 func unaryInterceptor(ctx context.Context, method string, req interface{}, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 	fmt.Println("CLIENT-INT CALLED")
 	// md := metadata.Pairs("timestamp", "2:pm")
-	md := metadata.New(map[string]string{"token": user.Token})
+	md := metadata.New(map[string]string{"token": "fsdfjk sdfks"})
 
 	ctx = metadata.NewOutgoingContext(context.Background(), md)
 	err := invoker(ctx, method, req, reply, cc, opts...)

@@ -21,7 +21,7 @@ var (
 
 var publicRPC = []string{
 	"/blog.BlogService/ReadBlog",
-	"/blog.BlogService/ListBlo",
+	"/blog.BlogService/ListBlog",
 	"/auth.AuthService/Login",
 }
 
@@ -29,7 +29,7 @@ var publicRPC = []string{
 func valid(tokenString []string) bool {
 
 	token := strings.TrimPrefix(tokenString[0], "token ")
-	fmt.Println("token received:", token)
+	// fmt.Println("token received:", token)
 	if user.UserSession[user.User].SID != token {
 
 		log.Println("token not matched")
@@ -47,7 +47,7 @@ func valid(tokenString []string) bool {
 }
 
 func unaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	log.Println("-->ensure valid token :: ", info.FullMethod)
+	log.Println("-->RCP METHOD :: ", info.FullMethod)
 
 	for _, v := range publicRPC {
 		if v == info.FullMethod {
@@ -62,9 +62,9 @@ func unaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	}
 
 	// validate the token
-	if !valid(md["token"]) {
-		return nil, errInvalidToken
-	}
+	// if !valid(md["token"]) {
+	// 	return nil, errInvalidToken
+	// }
 	// Continue execution of handler after ensuring a valid token.
 	return handler(ctx, req)
 }

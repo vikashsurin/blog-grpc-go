@@ -13,18 +13,33 @@ export function CreateBlog() {
   var client = new BlogServiceClient("http://localhost:8080");
 
   var blog = new Blog();
-  blog.setAuthorId("vikash");
+  blog.setAuthorId("vikash surin");
   blog.setTitle("new blog");
   blog.setContent("This is a new content.");
 
   var request = new CreateBlogRequest();
   request.setBlog(blog);
-  client.createBlog(request, {}, (err, response) => {
-    console.log("CREATE BLOG :: ", response);
-    blogID = response.getBlog().getId();
-  });
+  
+    console.log("create blog")
 
-  console.log(" this is blog id", blogID);
+    var call = client.createBlog(request, {}, (err, response) => {
+      console.log("CREATE BLOG :: ", response);
+      if (err){
+        console.log(err.code)
+        console.log(err.message)
+      }else{
+        console.log(response.getBlog())
+      }
+    });
+    call.on("status",function(status){
+
+      console.log(status.code);
+      console.log(status.details);
+      console.log(status.metadata);
+    })
+ 
+
+  console.log("create blog exited");
 }
 
 export function ReadBlog() {
