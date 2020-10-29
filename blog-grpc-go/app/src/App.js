@@ -2,10 +2,11 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 
-import { CreateBlog, ReadBlog,UpdateBlog ,DeleteBlog} from "./methods/blog";
-import { blogID } from "./methods/blog";
+import { CreateBlog, ReadBlog, UpdateBlog, DeleteBlog, listblog } from "./methods/blog";
+import { createUser, deleteUser, readUser, updateUser } from "./methods/user";
+import { login, logout } from "./methods/auth";
+
 function App() {
-  // console.log("blogid from main", blogID);
   return (
     <div className="App">
       <header className="App-header">
@@ -21,10 +22,17 @@ function App() {
         >
           Learn React
         </a>
-        <button onClick={()=>CreateBlog()}>CREATE</button>
-        <button onClick={()=>ReadBlog()}>READ</button>
-        <button onClick={()=>UpdateBlog()}>UPDATE</button>
-        <button onClick={()=>DeleteBlog()}>DELETE</button>
+        <button onClick={() => CreateBlog()}>CREATE</button>
+        <button onClick={() => ReadBlog()}>READ</button>
+        <button onClick={() => UpdateBlog()}>UPDATE</button>
+        <button onClick={() => DeleteBlog()}>DELETE</button>
+        <button onClick={() => listblog()}>LIST BLOG</button>
+        <button onClick={() => createUser()}>CREATE USER</button>
+        <button onClick={() => readUser()}>READ USER</button>
+        <button onClick={() => updateUser()}>UPDATE USER</button>
+        <button onClick={() => deleteUser()}>DELETE USER</button>
+        <button onClick={() => login()}>LOGIN USER</button>
+        <button onClick={() => logout()}>LOGOUT USER</button>
       </header>
     </div>
   );
