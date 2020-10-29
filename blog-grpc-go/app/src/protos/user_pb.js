@@ -1,3 +1,5 @@
+/*eslint-disable*/
+
 // source: protos/user.proto
 /**
  * @fileoverview
