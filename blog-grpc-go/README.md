@@ -1,4 +1,7 @@
 # Blog app
+
+** Go** **Javascript** **reactjs** **mongodb** **envoy**
+
 ##### files
 - **server** Go server
 - **protos** proto definitions
