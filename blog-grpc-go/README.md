@@ -1,5 +1,4 @@
 # Blog app
----
 ##### files
 - **server** Go server
 - **protos** proto definitions
