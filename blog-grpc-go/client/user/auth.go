@@ -15,8 +15,8 @@ func Login(c authpb.AuthServiceClient) {
 	fmt.Println("Logging in User")
 
 	req := &authpb.LoginRequest{
-		UserName: "vikash",
-		Password: "password",
+		UserEmail: "vikashsurin10@gmail.com",
+		Password:  "password",
 	}
 	res, err := c.Login(context.Background(), req)
 	if err != nil {
@@ -24,4 +24,14 @@ func Login(c authpb.AuthServiceClient) {
 	}
 	Token = res.GetToken()
 	fmt.Println("login res received ", res.GetToken())
+}
+
+// Logout ...
+func Logout(c authpb.AuthServiceClient) {
+	fmt.Println("Logging out user")
+	res, err := c.Logout(context.Background(), &authpb.LogoutRequest{})
+	if err != nil {
+		log.Fatalln("error while logging out", err)
+	}
+	fmt.Println(res)
 }

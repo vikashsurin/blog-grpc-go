@@ -41,15 +41,15 @@ type AuthServer struct{}
 // Login is ...
 func (*AuthServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb.LoginResponse, error) {
 	fmt.Println("LOGIN :: ")
-	userName := req.GetUserName()
+	userEmail := req.GetUserEmail()
 	Password := req.GetPassword()
-	if userName == "" || Password == "" {
+	if userEmail == "" || Password == "" {
 		return nil, nil
 	}
 
 	// create a empty user
 	data := &userItem{}
-	res := userCollection.FindOne(context.Background(), bson.M{"name": userName})
+	res := userCollection.FindOne(context.Background(), bson.M{"email": userEmail})
 	if err := res.Decode(data); err != nil {
 		return nil, status.Errorf(
 			codes.NotFound, fmt.Sprintf("Cannot find the user with the ID : %v", err))
@@ -65,8 +65,8 @@ func (*AuthServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb
 	sid := uuid.New()
 	s := newSession(sid.String(), 100*time.Second)
 	// store session and user
-	User = userName
-	UserSession[userName] = *s
+	User = userEmail
+	UserSession[userEmail] = *s
 	loginRes := &authpb.LoginResponse{
 		Token: s.SID,
 	}
@@ -78,5 +78,6 @@ func (*AuthServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb
 
 // Logout is ....
 func (*AuthServer) Logout(ctx context.Context, req *authpb.LogoutRequest) (*authpb.LogoutResponse, error) {
+	delete(UserSession, User)
 	return nil, nil
 }

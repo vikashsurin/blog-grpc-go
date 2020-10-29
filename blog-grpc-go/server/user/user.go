@@ -127,3 +127,16 @@ func (*Server) UpdateUser(ctx context.Context, req *userpb.UpdateUserRequest) (*
 }
 
 //DeleteUser ...
+func (*Server) DeleteUser(ctx context.Context, req *userpb.DeleteUserRequest) (*userpb.DeleteUserResponse, error) {
+	oid, err := primitive.ObjectIDFromHex(req.UserId)
+	primitive.ErrParseInf.Error()
+
+	deleteRes, err := userCollection.DeleteOne(context.Background(), bson.M{"_id": oid})
+	if err != nil {
+		log.Fatalln("error deleting the user ", err)
+	}
+	fmt.Println("deleted count ", deleteRes.DeletedCount)
+	return &userpb.DeleteUserResponse{
+		UserId: string(deleteRes.DeletedCount),
+	}, nil
+}

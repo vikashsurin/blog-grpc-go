@@ -28,16 +28,25 @@ func main() {
 	}
 	fmt.Println("Hello there")
 
-	opts := []grpc.DialOption{
-		grpc.WithUnaryInterceptor(unaryInterceptor),
-		grpc.WithTransportCredentials(creds),
-		grpc.WithBlock(),
+	tls := false
+	var opts []grpc.DialOption
+	if tls == true {
+		opts = []grpc.DialOption{
+			grpc.WithUnaryInterceptor(unaryInterceptor),
+			grpc.WithTransportCredentials(creds),
+			grpc.WithBlock(),
+		}
+	} else {
+		opts = []grpc.DialOption{
+			grpc.WithInsecure(),
+		}
 	}
-	cc, err := grpc.Dial("localhost:5000", opts...)
+	fmt.Println(opts)
+	cc, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
-	fmt.Println("Connected to localhost:5000")
+	fmt.Println("Connected to localhost:8080")
 	defer cc.Close()
 
 	c := blogpb.NewBlogServiceClient(cc)

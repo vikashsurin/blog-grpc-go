@@ -29,7 +29,7 @@ func main() {
 
 func serve() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	lis, err := net.Listen("tcp", "0.0.0.0:5000")
+	lis, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
 		log.Fatalf("Error while listening : %v", err)
 	}
@@ -43,12 +43,23 @@ func serve() {
 		log.Fatalf("Failed loading certification : %v", sslErr)
 		return
 	}
-	// opts := grpc.Creds(creds)
-	opts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(unaryInterceptor),
-		grpc.StreamInterceptor(streamInterceptor),
-		grpc.Creds(creds),
+
+	// tls toggle
+	tls := false
+	var opts []grpc.ServerOption
+	if tls == true {
+		opts = []grpc.ServerOption{
+			grpc.UnaryInterceptor(unaryInterceptor),
+			grpc.StreamInterceptor(streamInterceptor),
+			grpc.Creds(creds),
+		}
+	} else {
+		opts = []grpc.ServerOption{
+			grpc.UnaryInterceptor(unaryInterceptor),
+			grpc.StreamInterceptor(streamInterceptor),
+		}
 	}
+	// opts := grpc.Creds(creds)
 	// fmt.Println("creds :: ", opts, creds)
 	s := grpc.NewServer(opts...)
 

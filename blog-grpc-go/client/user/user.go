@@ -52,3 +52,17 @@ func UpdateUser(u userpb.UserServiceClient) {
 	}
 	fmt.Println("Updated the user :: ", updateUserRes)
 }
+
+// DeleteUser ...
+func DeleteUser(u userpb.UserServiceClient) {
+	fmt.Println("Delete the user.")
+
+	req := &userpb.DeleteUserRequest{
+		UserId: "xyz",
+	}
+	deleteRes, err := u.DeleteUser(context.Background(), req)
+	if err != nil {
+		fmt.Println("error deleting the user .", err)
+	}
+	fmt.Println("Updated the user :: ", deleteRes)
+}

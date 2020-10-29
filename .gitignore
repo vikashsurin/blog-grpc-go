@@ -4,3 +4,4 @@ greet
 grpcUnary
 multiplexGrpc
 testSSL
+testReact
