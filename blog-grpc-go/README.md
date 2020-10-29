@@ -1,6 +1,6 @@
 # Blog app
 
-** Go** **Javascript** **reactjs** **mongodb** **envoy**
+**Go** **Javascript** **reactjs** **mongodb** **envoy**
 
 ##### files
 - **server** Go server
