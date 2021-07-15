@@ -1,7 +1,7 @@
 syntax ="proto3";
 
 package profile;
-option go_package="profilepb;profilepb";
+option go_package="./profilepb";
 
 message Profile {
 string name =1;

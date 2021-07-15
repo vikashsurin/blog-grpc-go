@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package test;
 
-option go_package = "testpb;testpb";
+option go_package = "./testpb";
 
 message TestRequest {
   string test = 1;
