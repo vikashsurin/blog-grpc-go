@@ -26,5 +26,7 @@ grpcproxy:
 		--backend_addr=localhost:5000 \
 		--backend_tls_noverify \
 		--allow_all_origins
+# envoyProxy:
+# 	cd envoy; envoy -c envoy.yaml
 envoyProxy:
-	cd envoy; envoy -c envoy.yaml
+	cd envoy; func-e run -c envoy.yaml 
