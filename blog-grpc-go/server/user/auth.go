@@ -18,6 +18,11 @@ var UserSession = map[string]Session{}
 // User ..
 var User string
 
+// AuthServer is ....
+type AuthServer struct {
+	authpb.UnimplementedAuthServiceServer
+}
+
 // Session ...
 type Session struct {
 	SID    string
@@ -34,9 +39,6 @@ func DestroySession() {
 	delete(UserSession, User)
 	return
 }
-
-// AuthServer is ....
-type AuthServer struct{}
 
 // Login is ...
 func (*AuthServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb.LoginResponse, error) {
