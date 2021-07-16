@@ -15,7 +15,7 @@ const {
 } = require("../protos/blog_grpc_web_pb");
 
 export var blogID = "5f8043e7f5edbb1673a50f48";
-const host = "http://localhost:8000";
+const host = "http://localhost:8080";
 
 export const CreateBlog = async (author, title, content) => {
   var client = new BlogServicePromiseClient(host, null, null);

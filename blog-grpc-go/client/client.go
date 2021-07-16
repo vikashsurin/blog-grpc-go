@@ -46,6 +46,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
+	// connect to localhost:8080 through envoy
+	// connect to localhost:5000 dicrectly  without envoy
 	fmt.Println("Connected to localhost:8080")
 	defer cc.Close()
 
