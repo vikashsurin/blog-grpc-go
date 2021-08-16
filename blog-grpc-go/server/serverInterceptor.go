@@ -24,6 +24,9 @@ var publicRPC = []string{
 	"/blog.BlogService/ListBlog",
 	"/auth.AuthService/Login",
 }
+var kal = []string{
+	"hello",
+}
 
 // valid validates the authorization.
 func valid(tokenString []string) bool {

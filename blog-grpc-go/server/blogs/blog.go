@@ -24,7 +24,7 @@ type blogItem struct {
 	Title    string             `bson:"title"`
 }
 
-var blogCollection = config.ConnectDB().Database("blogdb").Collection("blog")
+var blogCollection = config.ConnectDB().Database("blogdb").Collection("blogs")
 
 // // BlogInit ...
 // func BlogInit() *grpc.Server {

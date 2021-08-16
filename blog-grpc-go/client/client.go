@@ -42,13 +42,13 @@ func main() {
 		}
 	}
 	fmt.Println(opts)
-	cc, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
+	cc, err := grpc.Dial("192.168.49.2:30343", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
 	// connect to localhost:8080 through envoy
 	// connect to localhost:5000 dicrectly  without envoy
-	fmt.Println("Connected to localhost:8080")
+	fmt.Println("Connected to port:8080")
 	defer cc.Close()
 
 	c := blogpb.NewBlogServiceClient(cc)

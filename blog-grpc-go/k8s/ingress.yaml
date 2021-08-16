@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grpc-server
+  namespace: grpc
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - host: grpc.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mymongo
+                port:
+                  number: 27017
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grpc-server
+                port:
+                  number: 8080

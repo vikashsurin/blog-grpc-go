@@ -7,7 +7,7 @@ const {
 } = require("../protos/user_pb");
 const { UserServiceClient } = require("../protos/user_grpc_web_pb");
 
-const host = "http://localhost:8080";
+const host = "http://localhost:8000";
 
 export function createUser() {
   var client = new UserServiceClient(host);

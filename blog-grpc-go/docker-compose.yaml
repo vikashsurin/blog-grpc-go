@@ -1,0 +1,16 @@
+version: "3"
+services:
+  mymongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  envoy:
+    image: vikashsurin/envoy:v2
+    ports:
+      - "8000:8000"
+
+  server:
+    image: vikashsurin/server:latest
+    ports:
+      - "8080:8080"
