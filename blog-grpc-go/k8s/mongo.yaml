@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongodb-server
+  name: mongodb-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-server
+  template:
+    metadata:
+      labels:
+        app: mongodb-server
+    spec:
+      containers:
+        - image: mongo
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          name: mongodb-server
+          ports:
+            - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongodb-server-service
+  name: mongodb-server-service
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 27017
+      protocol: TCP
+      port: 27017
+  selector:
+    app: mongodb-server
+  sessionAffinity: None

@@ -42,7 +42,8 @@ func main() {
 		}
 	}
 	fmt.Println(opts)
-	cc, err := grpc.Dial("192.168.49.2:30343", grpc.WithInsecure())
+	uri := "192.168.49.2:31000"
+	cc, err := grpc.Dial(uri, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}

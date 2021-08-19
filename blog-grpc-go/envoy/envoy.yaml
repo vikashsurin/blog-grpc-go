@@ -49,5 +49,5 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: server
+                      address: grpc-server-service
                       port_value: 8080

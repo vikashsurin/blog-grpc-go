@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: envoy-server
+  name: envoy-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: envoy-server
+  template:
+    metadata:
+      labels:
+        app: envoy-server
+    spec:
+      containers:
+        - image: vikashsurin/envoy:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          name: envoy-server
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: envoy-server-service
+  name: envoy-server-service
+spec:
+  type: NodePort
+  selector:
+    app: envoy-server
+  ports:
+    - targetPort: 8000
+      protocol: TCP
+      port: 8000
+      nodePort: 31000
+  sessionAffinity: None

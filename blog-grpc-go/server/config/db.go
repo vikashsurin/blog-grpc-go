@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,7 +14,8 @@ import (
 //ConnectDB ...
 func ConnectDB() *mongo.Client {
 	fmt.Println("mongodb connecting...")
-	clientOptions := options.Client().ApplyURI("mongodb://mymongo:27017")
+	uri := os.Getenv("URI")
+	clientOptions := options.Client().ApplyURI(uri)
 	// db := "mongodb+srv://vikash:vikash@cluster0.1dafl.mongodb.net/blogdb?retryWrites=true&w=majority"
 	// clientOptions := options.Client().ApplyURI(db)
 
