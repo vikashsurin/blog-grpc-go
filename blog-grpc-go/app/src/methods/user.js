@@ -1,3 +1,5 @@
+import { keys } from "../keys/key.js";
+
 const {
   User,
   CreateUserRequest,
@@ -7,7 +9,7 @@ const {
 } = require("../protos/user_pb");
 const { UserServiceClient } = require("../protos/user_grpc_web_pb");
 
-const host = "http://localhost:8000";
+const host = keys.k8s;
 
 export function createUser() {
   var client = new UserServiceClient(host);

@@ -1,7 +1,8 @@
 const { LoginRequest, LogoutRequest } = require("../protos/auth_pb");
 const { AuthServicePromiseClient } = require("../protos/auth_grpc_web_pb");
 
-const host = "http://localhost:8000";
+import { keys } from "../keys/key.js";
+const host = keys.k8s;
 
 export const Login = async (email, password) => {
   var client = new AuthServicePromiseClient(host);
