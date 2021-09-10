@@ -5,9 +5,12 @@ import { selectBlogList } from "../redux/blog/blogSlice";
 
 import { useSelector } from "react-redux";
 function Homepage() {
+  const name = process.env.REACT_APP_NAME;
+  // console.log("from env ", name);
+  // console.log(process.env);
   let history = useHistory();
   const res = useSelector(selectBlogList);
-  console.log(res);
+  // console.log(res);
 
   const handleClick = (id) => {
     history.push(`/blog/${id}`);

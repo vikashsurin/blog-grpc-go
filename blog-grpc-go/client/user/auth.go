@@ -1,7 +1,7 @@
 package user
 
 import (
-	"blog/protos/authpb"
+	"blog.com/protos/authpb"
 	"context"
 	"fmt"
 	"log"
@@ -15,7 +15,7 @@ func Login(c authpb.AuthServiceClient) {
 	fmt.Println("Logging in User")
 
 	req := &authpb.LoginRequest{
-		UserEmail: "vikashsurin10@gmail.com",
+		UserEmail: "vik@@gmail.com",
 		Password:  "password",
 	}
 	res, err := c.Login(context.Background(), req)

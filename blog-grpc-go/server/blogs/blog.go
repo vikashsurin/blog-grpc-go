@@ -1,10 +1,11 @@
 package blog
 
 import (
-	blogpb "blog/protos/blogpb"
-	"blog/server/config"
 	"context"
 	"fmt"
+
+	blogpb "blog.com/protos/blogpb"
+	"blog.com/server/config"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

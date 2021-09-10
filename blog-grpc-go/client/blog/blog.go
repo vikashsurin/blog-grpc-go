@@ -1,11 +1,12 @@
 package blog
 
 import (
-	blogpb "blog/protos/blogpb"
 	"context"
 	"fmt"
 	"io"
 	"log"
+
+	blogpb "blog.com/protos/blogpb"
 )
 
 var blogID string

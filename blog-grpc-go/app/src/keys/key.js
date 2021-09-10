@@ -1,3 +1,4 @@
 export let keys = {
-  k8s: "http://192.168.49.2:31000",
+  // k8s: "http://34.69.82.135:80", //working in production
+  k8s: "http://localhost:8000",
 };

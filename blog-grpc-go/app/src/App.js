@@ -43,20 +43,20 @@ function App() {
         <Navbar />
         <Switch>
           <Route exact path="/" component={Homepage} />
-          <Route exact path="/hello" component={Hello} />
+          {/* <Route exact path="/hello" component={Hello} /> */}
           <Route exact path="/blog/:id" component={BlogPost} />
-          {/* <Route exact path="/blog" component={BlogPost} /> */}
+          <Route exact path="/blog" component={BlogPost} />
           <Route exact path="/blog/:id/edit" component={UpdatePost} />
           <Route exact path="/create" component={CreatePost} />
-          {/* <Route exact path='/login' component={Login} /> */}
-          {/* <Route exact path='/register' component={Register} /> */}
-          {/* <Route exact path="/auth" component={Auth} />
-          <Route exact path="/logout" component={Auth} />
-          <Route exact path="/posts" component={Posts} />
-          <Route exact path="/create-profile" component={CreateProfile} />
-          <Route exact path="/edit-profile" component={EditProfile} />
-          <PrivateRoute exact path="/dashboard" component={Dashboard} /> */}
-          {/* <PrivateRoute exact path='/add-post' component={AddPost} /> */}
+          {/* <Route exact path="/login" component={Login} /> */}
+          {/* <Route exact path="/register" component={Register} /> */}
+          {/* <Route exact path="/auth" component={Auth} /> */}
+          {/* <Route exact path="/logout" component={Auth} /> */}
+          {/* <Route exact path="/posts" component={Posts} /> */}
+          {/* <Route exact path="/create-profile" component={CreateProfile} /> */}
+          {/* <Route exact path="/edit-profile" component={EditProfile} /> */}
+          {/* <PrivateRoute exact path="/dashboard" component={Dashboard} /> */}
+          {/* <PrivateRoute exact path="/add-post" component={AddPost} /> */}
         </Switch>
       </Router>
     </Fragment>

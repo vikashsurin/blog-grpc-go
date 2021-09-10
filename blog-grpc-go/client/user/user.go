@@ -1,7 +1,7 @@
 package user
 
 import (
-	userpb "blog/protos/userpb"
+	userpb "blog.com/protos/userpb"
 	"context"
 	"fmt"
 )
@@ -14,7 +14,7 @@ func CreateUser(u userpb.UserServiceClient) {
 
 	user := &userpb.User{
 		Name:     "vikash",
-		Email:    "vik@@gmail.com",
+		Email:    "vikashsurin10@gmail.com",
 		Password: "password",
 	}
 

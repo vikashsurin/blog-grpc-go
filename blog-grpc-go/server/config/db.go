@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,10 +13,10 @@ import (
 //ConnectDB ...
 func ConnectDB() *mongo.Client {
 	fmt.Println("mongodb connecting...")
-	uri := os.Getenv("URI")
+	// uri := os.Getenv("URI")
+	// uri := "mongodb+srv://vikash:OAbMOP0FpJlJH14y@cluster0.1dafl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+	uri := "mongodb://localhost:27017"
 	clientOptions := options.Client().ApplyURI(uri)
-	// db := "mongodb+srv://vikash:vikash@cluster0.1dafl.mongodb.net/blogdb?retryWrites=true&w=majority"
-	// clientOptions := options.Client().ApplyURI(db)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

@@ -1,7 +1,7 @@
 package test
 
 import (
-	testpb "blog/protos/testpb"
+	testpb "blog.com/protos/testpb"
 	"context"
 	"fmt"
 )

@@ -1,19 +1,22 @@
 package main
 
 import (
-	"blog/data"
-	"blog/protos/authpb"
-	blogpb "blog/protos/blogpb"
-	testpb "blog/protos/testpb"
-	userpb "blog/protos/userpb"
-	blog "blog/server/blogs"
-	"blog/server/config"
-	"blog/server/test"
-	"blog/server/user"
 	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net"
+
+	"blog.com/protos/authpb"
+	blogpb "blog.com/protos/blogpb"
+	testpb "blog.com/protos/testpb"
+	userpb "blog.com/protos/userpb"
+	blog "blog.com/server/blogs"
+	"blog.com/server/config"
+	"blog.com/server/test"
+	"blog.com/server/user"
+
+	"blog.com/data"
 
 	"os"
 	"os/signal"
@@ -36,33 +39,27 @@ func serve() {
 	}
 
 	// credentials
-	certFile := data.Path("x509/server_cert.pem")
-	keyFile := data.Path("x509/server_key.pem")
-
-	creds, sslErr := credentials.NewServerTLSFromFile(certFile, keyFile)
-	if sslErr != nil {
-		log.Fatalf("Failed loading certification : %v", sslErr)
-		return
+	cert, err := tls.LoadX509KeyPair(data.Path("x509/server_cert.pem"), data.Path("x509/server_key.pem"))
+	if err != nil {
+		log.Fatalf("failed to load key pair: %s", err)
 	}
-	fmt.Println(kal)
-
 	// tls toggle
-	tls := false
+	tls := true
 	var opts []grpc.ServerOption
 	if tls == true {
 		opts = []grpc.ServerOption{
-			grpc.UnaryInterceptor(unaryInterceptor),
+			// grpc.UnaryInterceptor(unaryInterceptor),
+			grpc.UnaryInterceptor(ensureValidToken),
 			grpc.StreamInterceptor(streamInterceptor),
-			grpc.Creds(creds),
+			grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
 		}
 	} else {
 		opts = []grpc.ServerOption{
-			grpc.UnaryInterceptor(unaryInterceptor),
+			// grpc.UnaryInterceptor(unaryInterceptor),
+			// grpc.UnaryInterceptor(unaryInterceptor),
 			grpc.StreamInterceptor(streamInterceptor),
 		}
 	}
-	// opts := grpc.Creds(creds)
-	// fmt.Println("creds :: ", opts, creds)
 	s := grpc.NewServer(opts...)
 
 	// Register grpc servers

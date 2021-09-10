@@ -1,12 +1,13 @@
 package main
 
 import (
-	"blog/server/user"
 	"context"
 	"fmt"
 	"log"
 	"strings"
 	"time"
+
+	"blog.com/server/user"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -23,51 +24,71 @@ var publicRPC = []string{
 	"/blog.BlogService/ReadBlog",
 	"/blog.BlogService/ListBlog",
 	"/auth.AuthService/Login",
+	"/user.UserService/CreateUser",
 }
-var kal = []string{
-	"hello",
+var privateRPC = []string{
+	"/blog.BlogService/CreateBlog",
+	"/blog.BlogService/UpdateBlog",
+	"/blog.BlogService/DeleteBlog",
+	"/auth.AuthService/Logout",
+	"/user.UserService/ReadUser",
+	"/user.UserService/UpdateUser",
+	"/user.UserService/DeleteUser",
 }
 
 // valid validates the authorization.
-func valid(tokenString []string) bool {
+func valid(authorization []string) bool {
+	if len(authorization) < 1 {
+		return false
+	}
+	token := strings.TrimPrefix(authorization[0], "Bearer ")
+	// Perform the token validation here. For the sake of this example, the code
+	// here forgoes any of the usual OAuth2 token validation and instead checks
+	// for a token matching an arbitrary string.
 
-	token := strings.TrimPrefix(tokenString[0], "token ")
-	// fmt.Println("token received:", token)
+	fmt.Println("USER SESSIONS :: ", user.UserSession)
+	fmt.Println("TOKEN :: ", token)
+
 	if user.UserSession[user.User].SID != token {
-
 		log.Println("token not matched")
 		return false
 	}
+
+	// Perform a check if the session is expired.
+	// difference of time.Now() and time of creation.
+	// on session expiry it , will be destroyed and user have to relogin.
 	diff := user.UserSession[user.User].Expire.Sub(time.Now())
 	fmt.Println(diff)
-
-	// if the session is expired , destroy it.
 	if diff < 0 {
 		user.DestroySession()
 	}
 	return diff > 0
-
 }
 
-func unaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	log.Println("-->RCP METHOD :: ", info.FullMethod)
-
+// ensureValidToken ensures a valid token exists within a request's metadata. If
+// the token is missing or invalid, the interceptor blocks execution of the
+// handler and returns an error. Otherwise, the interceptor invokes the unary
+// handler.
+func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	// Checks if the rcp is public.
+	// if it is public it will skip the validation of token.
 	for _, v := range publicRPC {
 		if v == info.FullMethod {
-			fmt.Println("this is a public RPC")
+			fmt.Println("\n\nthis is a public RPC")
 			return handler(ctx, req)
 		}
 	}
+
 	md, ok := metadata.FromIncomingContext(ctx)
-	log.Println("-->metadata :: ", md)
 	if !ok {
 		return nil, errMissingMetadata
 	}
-
-	// validate the token
-	// if !valid(md["token"]) {
-	// 	return nil, errInvalidToken
-	// }
+	fmt.Println("MD :: ", md)
+	// The keys within metadata.MD are normalized to lowercase.
+	// See: https://godoc.org/google.golang.org/grpc/metadata#New
+	if !valid(md["authorization"]) {
+		return nil, errInvalidToken
+	}
 	// Continue execution of handler after ensuring a valid token.
 	return handler(ctx, req)
 }

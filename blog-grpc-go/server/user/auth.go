@@ -1,7 +1,7 @@
 package user
 
 import (
-	"blog/protos/authpb"
+	"blog.com/protos/authpb"
 	"context"
 	"fmt"
 	"time"
@@ -56,8 +56,8 @@ func (*AuthServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb
 		return nil, status.Errorf(
 			codes.NotFound, fmt.Sprintf("Cannot find the user with the ID : %v", err))
 	}
-	// verify password
 
+	// verify password
 	if data.Password != Password {
 		return nil, nil
 	}
@@ -74,6 +74,7 @@ func (*AuthServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb
 	}
 	fmt.Println("USER FROM LOGIN :: ", User)
 	fmt.Println("user session created ")
+	fmt.Println("USERSESSIONS :: ", UserSession)
 
 	return loginRes, nil
 }

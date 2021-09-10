@@ -1,9 +1,10 @@
 package user
 
 import (
-	userpb "blog/protos/userpb"
-	"blog/server/config"
 	"log"
+
+	userpb "blog.com/protos/userpb"
+	"blog.com/server/config"
 
 	"context"
 	"fmt"
