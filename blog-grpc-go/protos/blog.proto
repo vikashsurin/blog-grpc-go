@@ -45,7 +45,12 @@ message ListBlogRequest{
 message ListBlogResponse{
   Blog blog =1;
 }
-
+message ListBlogRequestByUserId{
+  string user_id =1;
+}
+message ListBlogResponseByUserId{
+  Blog blog =1;
+}
 service BlogService {
   rpc CreateBlog(CreateBlogRequest) returns (CreateBlogResponse);
   rpc ReadBlog(ReadBlogRequest) returns (ReadBlogResponse);
@@ -55,4 +60,5 @@ service BlogService {
   rpc DeleteBlog(DeleteBlogRequest) returns (DeleteBlogResponse);
   // returns not found
   rpc ListBlog(ListBlogRequest) returns (stream ListBlogResponse);
+  rpc ListBlogByUserId(ListBlogRequestByUserId) returns (stream ListBlogResponseByUserId);
 }

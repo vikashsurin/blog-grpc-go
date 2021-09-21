@@ -1,0 +1,3 @@
+echo ----starting envoy tls-----
+envoy --config-path envoytls.yaml
+

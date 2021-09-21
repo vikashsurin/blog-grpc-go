@@ -6,8 +6,8 @@ const {
   ReadUserRequest,
   UpdateUserRequest,
   DeleteUserRequest,
-} = require("../protos/user_pb");
-const { UserServiceClient } = require("../protos/user_grpc_web_pb");
+} = require("protofiles/user_pb");
+const { UserServiceClient } = require("protofiles/user_grpc_web_pb");
 
 const host = keys.k8s;
 

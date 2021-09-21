@@ -1,6 +1,6 @@
 import { keys } from "../keys/key.js";
-const { LoginRequest, LogoutRequest } = require("../protos/auth_pb");
-const { AuthServicePromiseClient } = require("../protos/auth_grpc_web_pb");
+const { LoginRequest, LogoutRequest } = require("protofiles/auth_pb");
+const { AuthServicePromiseClient } = require("protofiles/auth_grpc_web_pb");
 
 const host = keys.k8s;
 

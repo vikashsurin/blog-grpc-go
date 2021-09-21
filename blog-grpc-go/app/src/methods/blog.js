@@ -9,12 +9,13 @@ const {
   UpdateBlogRequest,
   DeleteBlogRequest,
   ListBlogRequest,
-} = require("../protos/blog_pb");
+} = require("protofiles/blog_pb");
+
 const {
   BlogServicePromiseClient,
   BlogServiceClient,
   default: blog,
-} = require("../protos/blog_grpc_web_pb");
+} = require("protofiles/blog_grpc_web_pb");
 
 export var blogID = "5f8043e7f5edbb1673a50f48";
 const host = keys.k8s;

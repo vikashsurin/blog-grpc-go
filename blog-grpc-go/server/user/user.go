@@ -24,10 +24,11 @@ type Server struct {
 }
 
 type userItem struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty"`
-	Name     string             `bson:"name"`
-	Email    string             `bson:"email"`
-	Password string             `bson:"password"`
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	FirstName string             `bson:"firstName"`
+	LastName  string             `bson:"lastName"`
+	Email     string             `bson:"email"`
+	Password  string             `bson:"password"`
 }
 
 // CreateUser ...
@@ -36,9 +37,15 @@ func (*Server) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*
 	user := req.GetUser()
 
 	data := userItem{
-		Name:     user.GetName(),
-		Email:    user.GetEmail(),
-		Password: user.GetPassword(),
+		FirstName: user.GetFirstName(),
+		LastName:  user.GetLastName(),
+		Email:     user.GetEmail(),
+		Password:  user.GetPassword(),
+	}
+	exist := userCollection.FindOne(context.Background(), bson.M{"email": data.Email})
+	if exist != nil {
+		fmt.Println("user already exists")
+		return nil, status.Error(codes.AlreadyExists, "user already exists")
 	}
 	res, err := userCollection.InsertOne(context.Background(), data)
 	if err != nil {
@@ -54,9 +61,10 @@ func (*Server) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*
 	}
 	response := &userpb.CreateUserResponse{
 		User: &userpb.User{
-			Id:    oid.Hex(),
-			Name:  user.GetName(),
-			Email: user.GetEmail(),
+			Id:        oid.Hex(),
+			FirstName: user.GetFirstName(),
+			LastName:  user.GetLastName(),
+			Email:     user.GetEmail(),
 		},
 	}
 	fmt.Println("User data  ", data)
@@ -77,9 +85,10 @@ func (*Server) ReadUser(ctx context.Context, req *userpb.ReadUserRequest) (*user
 			codes.NotFound, fmt.Sprintf("Cannot find the user with the ID : %v", err))
 	}
 	response := &userpb.ReadUserResponse{User: &userpb.User{
-		Id:    data.ID.Hex(),
-		Name:  data.Name,
-		Email: data.Email,
+		Id:        data.ID.Hex(),
+		FirstName: data.FirstName,
+		LastName:  data.LastName,
+		Email:     data.Email,
 	}}
 	return response, nil
 }
@@ -104,12 +113,14 @@ func (*Server) UpdateUser(ctx context.Context, req *userpb.UpdateUserRequest) (*
 		)
 	}
 	// udpate
-	data.Name = user.GetName()
+	data.FirstName = user.GetFirstName()
+	data.LastName = user.GetLastName()
 	data.Email = user.GetEmail()
 
 	updateRes, err := userCollection.UpdateMany(context.Background(), bson.M{"_id": oid},
 		bson.D{
-			{"$set", bson.D{{"name", data.Name}}},
+			{"$set", bson.D{{"firstName", data.FirstName}}},
+			{"$set", bson.D{{"lastName", data.LastName}}},
 			{"$set", bson.D{{"email", data.Email}}},
 		})
 	if err != nil {
@@ -119,9 +130,10 @@ func (*Server) UpdateUser(ctx context.Context, req *userpb.UpdateUserRequest) (*
 
 	retRes := &userpb.UpdateUserResponse{
 		User: &userpb.User{
-			Id:    data.ID.Hex(),
-			Name:  data.Name,
-			Email: data.Email,
+			Id:        data.ID.Hex(),
+			FirstName: data.FirstName,
+			LastName:  data.LastName,
+			Email:     data.Email,
 		},
 	}
 	return retRes, nil

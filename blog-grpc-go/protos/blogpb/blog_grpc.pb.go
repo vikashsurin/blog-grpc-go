@@ -26,6 +26,7 @@ type BlogServiceClient interface {
 	DeleteBlog(ctx context.Context, in *DeleteBlogRequest, opts ...grpc.CallOption) (*DeleteBlogResponse, error)
 	// returns not found
 	ListBlog(ctx context.Context, in *ListBlogRequest, opts ...grpc.CallOption) (BlogService_ListBlogClient, error)
+	ListBlogByUserId(ctx context.Context, in *ListBlogRequestByUserId, opts ...grpc.CallOption) (BlogService_ListBlogByUserIdClient, error)
 }
 
 type blogServiceClient struct {
@@ -104,6 +105,38 @@ func (x *blogServiceListBlogClient) Recv() (*ListBlogResponse, error) {
 	return m, nil
 }
 
+func (c *blogServiceClient) ListBlogByUserId(ctx context.Context, in *ListBlogRequestByUserId, opts ...grpc.CallOption) (BlogService_ListBlogByUserIdClient, error) {
+	stream, err := c.cc.NewStream(ctx, &BlogService_ServiceDesc.Streams[1], "/blog.BlogService/ListBlogByUserId", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &blogServiceListBlogByUserIdClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type BlogService_ListBlogByUserIdClient interface {
+	Recv() (*ListBlogResponseByUserId, error)
+	grpc.ClientStream
+}
+
+type blogServiceListBlogByUserIdClient struct {
+	grpc.ClientStream
+}
+
+func (x *blogServiceListBlogByUserIdClient) Recv() (*ListBlogResponseByUserId, error) {
+	m := new(ListBlogResponseByUserId)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // BlogServiceServer is the server API for BlogService service.
 // All implementations must embed UnimplementedBlogServiceServer
 // for forward compatibility
@@ -116,6 +149,7 @@ type BlogServiceServer interface {
 	DeleteBlog(context.Context, *DeleteBlogRequest) (*DeleteBlogResponse, error)
 	// returns not found
 	ListBlog(*ListBlogRequest, BlogService_ListBlogServer) error
+	ListBlogByUserId(*ListBlogRequestByUserId, BlogService_ListBlogByUserIdServer) error
 	mustEmbedUnimplementedBlogServiceServer()
 }
 
@@ -137,6 +171,9 @@ func (UnimplementedBlogServiceServer) DeleteBlog(context.Context, *DeleteBlogReq
 }
 func (UnimplementedBlogServiceServer) ListBlog(*ListBlogRequest, BlogService_ListBlogServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListBlog not implemented")
+}
+func (UnimplementedBlogServiceServer) ListBlogByUserId(*ListBlogRequestByUserId, BlogService_ListBlogByUserIdServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListBlogByUserId not implemented")
 }
 func (UnimplementedBlogServiceServer) mustEmbedUnimplementedBlogServiceServer() {}
 
@@ -244,6 +281,27 @@ func (x *blogServiceListBlogServer) Send(m *ListBlogResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _BlogService_ListBlogByUserId_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ListBlogRequestByUserId)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(BlogServiceServer).ListBlogByUserId(m, &blogServiceListBlogByUserIdServer{stream})
+}
+
+type BlogService_ListBlogByUserIdServer interface {
+	Send(*ListBlogResponseByUserId) error
+	grpc.ServerStream
+}
+
+type blogServiceListBlogByUserIdServer struct {
+	grpc.ServerStream
+}
+
+func (x *blogServiceListBlogByUserIdServer) Send(m *ListBlogResponseByUserId) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // BlogService_ServiceDesc is the grpc.ServiceDesc for BlogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -272,6 +330,11 @@ var BlogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "ListBlog",
 			Handler:       _BlogService_ListBlog_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "ListBlogByUserId",
+			Handler:       _BlogService_ListBlogByUserId_Handler,
 			ServerStreams: true,
 		},
 	},

@@ -1,10 +1,11 @@
 package user
 
 import (
-	"blog.com/protos/authpb"
 	"context"
 	"fmt"
 	"time"
+
+	"blog.com/protos/authpb"
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
@@ -29,7 +30,7 @@ type Session struct {
 	Expire time.Time
 }
 
-// function to create newSession
+// f Create Session ....
 func newSession(sID string, t time.Duration) *Session {
 	return &Session{SID: sID, Expire: time.Now().Add(t)}
 }

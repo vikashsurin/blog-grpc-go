@@ -44,7 +44,7 @@ func serve() {
 		log.Fatalf("failed to load key pair: %s", err)
 	}
 	// tls toggle
-	tls := true
+	tls := false
 	var opts []grpc.ServerOption
 	if tls == true {
 		opts = []grpc.ServerOption{

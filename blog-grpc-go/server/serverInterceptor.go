@@ -23,6 +23,7 @@ var (
 var publicRPC = []string{
 	"/blog.BlogService/ReadBlog",
 	"/blog.BlogService/ListBlog",
+	"/blog.BlogService/ListBlogByUserId",
 	"/auth.AuthService/Login",
 	"/user.UserService/CreateUser",
 }

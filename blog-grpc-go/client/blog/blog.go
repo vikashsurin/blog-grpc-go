@@ -9,7 +9,8 @@ import (
 	blogpb "blog.com/protos/blogpb"
 )
 
-var blogID string
+var blogID = "613e462711dd563aeb05e21d"
+var userID = "xzx"
 
 // CreateBlog ...
 func CreateBlog(c blogpb.BlogServiceClient) {
@@ -75,6 +76,26 @@ func ListBlog(c blogpb.BlogServiceClient) {
 	fmt.Println("Listing Blogs.")
 
 	stream, err := c.ListBlog(context.Background(), &blogpb.ListBlogRequest{})
+	if err != nil {
+		log.Fatalln("error while calling ListBlog rpc ", err)
+	}
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalln("Something happened ", err)
+		}
+		fmt.Println(res.GetBlog())
+	}
+}
+
+//ListBlogByUserId ...
+func ListBlogByUser(c blogpb.BlogServiceClient) {
+	fmt.Println("Listing Blogs.")
+
+	stream, err := c.ListBlogByUserId(context.Background(), &blogpb.ListBlogRequestByUserId{UserId: userID})
 	if err != nil {
 		log.Fatalln("error while calling ListBlog rpc ", err)
 	}
