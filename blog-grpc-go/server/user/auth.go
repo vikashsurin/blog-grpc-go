@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"blog.com/protos/authpb"
+	"blog.com/server/config"
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
@@ -67,9 +68,14 @@ func (*AuthServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb
 	// create Session
 	sid := uuid.New()
 	s := newSession(sid.String(), 100*time.Second)
+
 	// store session and user
-	User = userEmail
-	UserSession[userEmail] = *s
+	_, err := config.Cache.Do("SETEX", sid, "180", userEmail)
+	if err != nil {
+		fmt.Println("error in redis while SETEX", err)
+	}
+	// User = userEmail
+	// UserSession[userEmail] = *s
 	loginRes := &authpb.LoginResponse{
 		Token: s.SID,
 	}

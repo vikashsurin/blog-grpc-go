@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
-	"blog.com/server/user"
-
+	"blog.com/server/config"
+	"github.com/gomodule/redigo/redis"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -38,32 +37,66 @@ var privateRPC = []string{
 }
 
 // valid validates the authorization.
+// func valid(authorization []string) bool {
+// 	if len(authorization) < 1 {
+// 		return false
+// 	}
+// 	token := strings.TrimPrefix(authorization[0], "Bearer ")
+// 	// Perform the token validation here. For the sake of this example, the code
+// 	// here forgoes any of the usual OAuth2 token validation and instead checks
+// 	// for a token matching an arbitrary string.
+
+// 	fmt.Println("USER SESSIONS :: ", user.UserSession)
+// 	fmt.Println("TOKEN :: ", token)
+
+// 	if user.UserSession[user.User].SID != token {
+// 		log.Println("token not matched")
+// 		return false
+// 	}
+// 	response, err := config.Cache.Do("GET", token)
+// 	if err != nil {
+// 		fmt.Println("failed token")
+// 		return false
+// 	}
+// 	if response == nil {
+// 		fmt.Println("not authorized")
+// 		return false
+// 	}
+// 	bytes, err := redis.Bytes(token, err)
+
+// 	fmt.Println(string(bytes))
+// 	// Perform a check if the session is expired.
+// 	// difference of time.Now() and time of creation.
+// 	// on session expiry it , will be destroyed and user have to relogin.
+// 	diff := user.UserSession[user.User].Expire.Sub(time.Now())
+// 	fmt.Println(diff)
+// 	if diff < 0 {
+// 		user.DestroySession()
+// 	}
+// 	return diff > 0
+// }
+
 func valid(authorization []string) bool {
 	if len(authorization) < 1 {
 		return false
 	}
+	//extract token
 	token := strings.TrimPrefix(authorization[0], "Bearer ")
-	// Perform the token validation here. For the sake of this example, the code
-	// here forgoes any of the usual OAuth2 token validation and instead checks
-	// for a token matching an arbitrary string.
 
-	fmt.Println("USER SESSIONS :: ", user.UserSession)
-	fmt.Println("TOKEN :: ", token)
-
-	if user.UserSession[user.User].SID != token {
-		log.Println("token not matched")
+	// redis cache
+	response, err := config.Cache.Do("GET", token)
+	if err != nil {
+		fmt.Println("failed token")
 		return false
 	}
-
-	// Perform a check if the session is expired.
-	// difference of time.Now() and time of creation.
-	// on session expiry it , will be destroyed and user have to relogin.
-	diff := user.UserSession[user.User].Expire.Sub(time.Now())
-	fmt.Println(diff)
-	if diff < 0 {
-		user.DestroySession()
+	if response == nil {
+		fmt.Println("not authorized")
+		return false
 	}
-	return diff > 0
+	bytes, _ := redis.Bytes(token, err)
+
+	fmt.Println(string(bytes))
+	return true
 }
 
 // ensureValidToken ensures a valid token exists within a request's metadata. If

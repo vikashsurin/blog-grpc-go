@@ -42,16 +42,118 @@ static_resources:
               "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
               common_tls_context:
                 tls_certificates:
+                  # The following self-signed certificate pair is generated using:
+                  # $ openssl req -x509 -newkey rsa:2048 -keyout a/front-proxy-key.pem -out  a/front-proxy-crt.pem -days 3650 -nodes -subj '/CN=front-envoy'
+                  #
+                  # Instead of feeding it as an inline_string, certificate pair can also be fed to Envoy
+                  # via filename. Reference: https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/base.proto#config-core-v3-datasource.
+                  #
+                  # Or in a dynamic configuration scenario, certificate pair can be fetched remotely via
+                  # Secret Discovery Service (SDS). Reference: https://www.envoyproxy.io/docs/envoy/latest/configuration/security/secret.
                   - certificate_chain:
-                      filename: server_cert.pem
+                      inline_string: |
+                        -----BEGIN CERTIFICATE-----
+                        MIIFeDCCA2CgAwIBAgICA+gwDQYJKoZIhvcNAQEFBQAwUDELMAkGA1UEBhMCVVMx
+                        CzAJBgNVBAgMAkNBMQwwCgYDVQQHDANTVkwxDTALBgNVBAoMBGdSUEMxFzAVBgNV
+                        BAMMDnRlc3Qtc2VydmVyX2NhMB4XDTIwMDgwNDAxNTk1OFoXDTMwMDgwMjAxNTk1
+                        OFowTjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAkNBMQwwCgYDVQQHDANTVkwxDTAL
+                        BgNVBAoMBGdSUEMxFTATBgNVBAMMDHRlc3Qtc2VydmVyMTCCAiIwDQYJKoZIhvcN
+                        AQEBBQADggIPADCCAgoCggIBAKonkszKvSg1IUvpfW3PAeDPLgLrXboOWJCXv3RD
+                        5q6vf29+IBCaljSJmU6T7SplokUML5ZkY6adjX6awG+LH3tOMg9zvXpHuSPRpFUk
+                        2oLFtaWuzJ+NC5HIM0wWDvdZ6KQsiPFbNxk2Rhkk+QKsiiptZy2yf/AbDY0sVieZ
+                        BJZJ+os+BdFIk7+XUgDutPdSAutTANhrGycYa4iYAfDGQApz3sndSSsM2KVc0w5F
+                        gW6w2UBC4ggc1ZaWdbVtkYo+0dCsrl1J7WUNsz8v8mjGsvm9eFuJjKFBiDhCF+xg
+                        4Xzu1Wz7zV97994la/xMImQR4QDdky9IgKcJMVUGua6U0GE5lmt2wnd3aAI228Vm
+                        6SnK7kKvnD8vRUyM9ByeRoMlrAuYb0AjnVBr/MTFbOaii6w2v3RjU0j6YFzp8+67
+                        ihOW9nkb1ayqSXD3T4QUD0p75Ne7/zz1r2amIh9pmSJlugLexVDpb86vXg9RnXjb
+                        Zn2HTEkXsL5eHUIlQzuhK+gdmj+MLGf/Yzp3fdaJsA0cJfMjj5Ubb2gR4VwzrHy9
+                        AD2Kjjzs06pTtpULChwpr9IBTLEsZfw/4uW4II4pfe6Rwn4bGHFifjx0+3svlsSo
+                        jdHcXEMHvdRPhWGUZ0rne+IK6Qxgb3OMZu7a04vV0RqvgovxM6hre3e0UzBJG45Y
+                        qlQjAgMBAAGjXjBcMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFFL5HUzehgKNfgdz
+                        4nuw5fru5OTPMA4GA1UdDwEB/wQEAwIDqDAdBgNVHREEFjAUghIqLnRlc3QuZXhh
+                        bXBsZS5jb20wDQYJKoZIhvcNAQEFBQADggIBAHMPYTF4StfSx9869EoitlEi7Oz2
+                        YTOForDbsY9i0VnIamhIi9CpjekAGLo8SVojeAk7UV3ayiu0hEMAHJWbicgWTwWM
+                        JvZWWfrIk/2WYyBWWTa711DuW26cvtbSebFzXsovNeTqMICiTeYbvOAK826UdH/o
+                        OqNiHL+UO5xR1Xmqa2hKmLSl5J1n+zgm94l6SROzc9c5YDzn03U+8dlhoyXCwlTv
+                        JRprOD+lupccxcKj5Tfh9/G6PjKsgxW+DZ+rvQV5f/l7c4m/bBrgS8tru4t2Xip0
+                        NhQW4qHnL0wXdTjaOG/1liLppjcp7SsP+vKF4shUvp+P8NQuAswBp/QtqUse5EYl
+                        EUARWrjEpV4OHSKThkMackMg5E32keiOvQE6iICxtU+m2V+C3xXM3G2cGlDDx5Ob
+                        tan0c9fZXoygrN2mc94GPogfwFGxwivajvvJIs/bsB3RkcIuLbi2UB76Wwoq+ZvH
+                        15xxNZI1rpaDhjEuqwbSGPMPVpFtF5VERgYQ9LaDgj7yorwSQ1YLY8R1y0vSiAR2
+                        2YeOaBH1ZLPF9v9os1iK4TIC8XQfPv7ll2WdDwfbe2ux5GVbDBD4bPhP9s3F4a+f
+                        oPhikWsUY4eN5CfS76x6xL0L60TL1AlWLlwuubTxpvNhv3GSyxjfunjcGiXDml20
+                        6S80qO4hepxzzjol
+                        -----END CERTIFICATE-----
                     private_key:
-                      filename: server_key.pem
-                validation_context:
-                  match_subject_alt_names:
-                    - prefix: "www.localhost.com"
-                  trusted_ca:
-                    filename: ca_cert.pem
-              require_client_certificate: false
+                      inline_string: |
+                        -----BEGIN RSA PRIVATE KEY-----
+                        MIIJKQIBAAKCAgEAqieSzMq9KDUhS+l9bc8B4M8uAutdug5YkJe/dEPmrq9/b34g
+                        EJqWNImZTpPtKmWiRQwvlmRjpp2NfprAb4sfe04yD3O9eke5I9GkVSTagsW1pa7M
+                        n40LkcgzTBYO91nopCyI8Vs3GTZGGST5AqyKKm1nLbJ/8BsNjSxWJ5kElkn6iz4F
+                        0UiTv5dSAO6091IC61MA2GsbJxhriJgB8MZACnPeyd1JKwzYpVzTDkWBbrDZQELi
+                        CBzVlpZ1tW2Rij7R0KyuXUntZQ2zPy/yaMay+b14W4mMoUGIOEIX7GDhfO7VbPvN
+                        X3v33iVr/EwiZBHhAN2TL0iApwkxVQa5rpTQYTmWa3bCd3doAjbbxWbpKcruQq+c
+                        Py9FTIz0HJ5GgyWsC5hvQCOdUGv8xMVs5qKLrDa/dGNTSPpgXOnz7ruKE5b2eRvV
+                        rKpJcPdPhBQPSnvk17v/PPWvZqYiH2mZImW6At7FUOlvzq9eD1GdeNtmfYdMSRew
+                        vl4dQiVDO6Er6B2aP4wsZ/9jOnd91omwDRwl8yOPlRtvaBHhXDOsfL0APYqOPOzT
+                        qlO2lQsKHCmv0gFMsSxl/D/i5bggjil97pHCfhsYcWJ+PHT7ey+WxKiN0dxcQwe9
+                        1E+FYZRnSud74grpDGBvc4xm7trTi9XRGq+Ci/EzqGt7d7RTMEkbjliqVCMCAwEA
+                        AQKCAgEAjU6UEVMFSBDnd/2OVtUlQCeOlIoWql8jmeEL9Gg3eTbx5AugYWmf+D2V
+                        fbZHrX/+BM2b74+rWkFZspyd14R4PpSv6jk6UASkcmS1zqfud8/tjIzgDli6FPVn
+                        9HYVM8IM+9qoV5hi56M1D8iuq1PS4m081Kx6p1IwLN93JSdksdL6KQz3E9jsKp5m
+                        UbPrwcDv/7JM723zfMJA+40Rf32EzalwicAl9YSTnrC57g428VAY+88Pm6EmmAqX
+                        8nXt+hs1b9EYdQziA5wfEgiljfIFzHVXMN3IVlrv35iz+XBzkqddw0ZSRkvTiz8U
+                        sNAhd22JqIhapVfWz+FIgM43Ag9ABUMNWoQlaT0+2KlhkL+cZ6J1nfpMTBEIatz0
+                        A/l4TGcvdDhREODrS5jrxwJNx/LMRENtFFnRzAPzX4RdkFvi8SOioAWRBvs1TZFo
+                        ZLq2bzDOzDjs+EPQVx0SmjZEiBRhI6nC8Way00IdQi3T546r6qTKfPmXgjl5/fVO
+                        J4adGVbEUnI/7+fqL2N82WVr+Le585EFP/6IL5FO++sAIGDqAOzEQhyRaLhmnz+D
+                        GboeS/Tac9XdymFbrEvEMB4EFS3nsZHTeahfiqVd/SuXFDTHZ6kiqXweuhfsP1uW
+                        7tGlnqtn+3zmLO6XRENPVvmjn7DhU255yjiKFdUqkajcoOYyWPECggEBANuYk+sr
+                        UTScvJoh/VRHuqd9NkVVIoqfoTN61x6V1OuNNcmjMWsOIsH+n4SifLlUW6xCKaSK
+                        8x8RJYfE9bnObv/NqM4DMhuaNd52bPKFi8IBbHSZpuRE/UEyJhMDpoto04H1GXx4
+                        1S49tndiNxQOv1/VojB4BH7kapY0yp30drK1CrocGN+YOUddxI9lOQpgt2AyoXVk
+                        ehdyamK4uzQmkMyyGQljrV5EQbmyPCqZ1l/d0MJ9DixOBxnPDR9Ov9qrG4Dy6S/k
+                        cH8PythqHTGTdlXgsBJaWEl2PyQupo3OhfiCV+79B9uxPfKvk5CIMVbnYxKgu+ly
+                        RKSTSX+GHVgNwicCggEBAMZcwQIAA+I39sTRg/Vn/MxmUBAu3h2+oJcuZ3FQh4v5
+                        SL80BWEsooK9Oe4MzxyWkU+8FieFu5G6iXaSx8f3Wv6j90IzA3g6Xr9M5xBm5qUN
+                        IqzF+hUZuKAEMY1NcPlFTa2NlrkT8JdfQvJ+D5QrcBIMFmg9cKG5x9yD7MfHTJkf
+                        ztMDFOwP3n7ahKRBowfe7/unAEFf6hYFtYjV+bqMDmBFVmk2CIVtjFgO9BNBQ/LB
+                        zGcnwo2VigWBIjRDF5BgV0v+2g0PZGaxJ362RigZjzJojx3gYj6kaZYX8yb6ttGo
+                        RPGt1A9woz6m0G0fLLMlce1dpbBAna14UVY7AEVt56UCggEAVvii/Oz3CINbHyB/
+                        GLYf8t3gdK03NPfr/FuWf4KQBYqz1txPYjsDARo7S2ifRTdn51186LIvgApmdtNH
+                        DwP3alClnpIdclktJKJ6m8LQi1HNBpEkTBwWwY9/DODRQT2PJ1VPdsDUja/baIT5
+                        k3QTz3zo85FVFnyYyky2QsDjkfup9/PQ1h2P8fftNW29naKYff0PfVMCF+80u0y2
+                        t/zeNHQE/nb/3unhrg4tTiIHiYhsedrVli6BGXOrms6xpYVHK1cJi/JJq8kxaWz9
+                        ivkAURrgISSu+sleUJI5XMiCvt3AveJxDk2wX0Gyi/eksuqJjoMiaV7cWOIMpfkT
+                        /h/U2QKCAQAFirvduXBiVpvvXccpCRG4CDe+bADKpfPIpYRAVzaiQ4GzzdlEoMGd
+                        k3nV28fBjbdbme6ohgT6ilKi3HD2dkO1j5Et6Uz0g/T3tUdTXvycqeRJHXLiOgi9
+                        d8CGqR456KTF74nBe/whzoiJS9pVkm0cI/hQSz8lVZJu58SqxDewo4HcxV5FRiA6
+                        PRKtoCPU6Xac+kp4iRx6JwiuXQQQIS+ZovZKFDdiuu/L2gcZrp4eXym9zA+UcxQb
+                        GUOCYEl9QCPQPLuM19w/Pj3TPXZyUlx81Q0Cka1NALzuc5bYhPKsot3iPrAJCmWV
+                        L4XtNozCKI6pSg+CABwnp4/mL9nPFsX9AoIBAQDHiDhG9jtBdgtAEog6oL2Z98qR
+                        u5+nONtLQ61I5R22eZYOgWfxnz08fTtpaHaVWNLNzF0ApyxjxD+zkFHcMJDUuHkR
+                        O0yxUbCaof7u8EFtq8P9ux4xjtCnZW+9da0Y07zBrcXTsHYnAOiqNbtvVYd6RPiW
+                        AaE61hgvj1c9/BQh2lUcroQx+yJI8uAAQrfYtXzm90rb6qk6rWy4li2ybMjB+LmP
+                        cIQIXIUzdwE5uhBnwIre74cIZRXFJBqFY01+mT8ShPUWJkpOe0Fojrkl633TUuNf
+                        9thZ++Fjvs4s7alFH5Hc7Ulk4v/O1+owdjqERd8zlu7+568C9s50CGwFnH0d
+                        -----END RSA PRIVATE KEY-----
+
+          # transport_socket:
+          #   name: envoy.transport_sockets.tls
+          #   typed_config:
+          #     "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+          #     common_tls_context:
+          #       tls_certificates:
+          #         - certificate_chain:
+          #             filename: server_cert.pem
+          #           private_key:
+          #             filename: server_key.pem
+          #       validation_context:
+          #         match_subject_alt_names:
+          #           - prefix: "www.localhost.com"
+          #         trusted_ca:
+          #           filename: ca_cert.pem
+          #     require_client_certificate: false
 
   clusters:
     - name: grpc-server

@@ -20,7 +20,7 @@ const host = keys.host;
 export var blogID = "5f8043e7f5edbb1673a50f48";
 
 export const CreateBlog = async (author, title, content) => {
-  var client = new BlogServicePromiseClient(host, null, null);
+  var client = new BlogServicePromiseClient(host, {"authorization":"09622b69-5e7c-44ca-8af2-46e95e800712"}, null);
 
   var blog = new Blog();
   blog.setAuthorId(author);

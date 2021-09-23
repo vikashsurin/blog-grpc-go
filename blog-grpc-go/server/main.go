@@ -15,6 +15,7 @@ import (
 	"blog.com/server/config"
 	"blog.com/server/test"
 	"blog.com/server/user"
+	"github.com/gomodule/redigo/redis"
 
 	"blog.com/data"
 
@@ -27,7 +28,19 @@ import (
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	initCache()
+
 	serve()
+
+}
+
+func initCache() {
+	conn, err := redis.DialURL("redis://localhost")
+	if err != nil {
+		panic(err)
+	}
+	config.Cache = conn
+
 }
 
 func serve() {
@@ -57,6 +70,7 @@ func serve() {
 		opts = []grpc.ServerOption{
 			// grpc.UnaryInterceptor(unaryInterceptor),
 			// grpc.UnaryInterceptor(unaryInterceptor),
+			grpc.UnaryInterceptor(ensureValidToken),
 			grpc.StreamInterceptor(streamInterceptor),
 		}
 	}

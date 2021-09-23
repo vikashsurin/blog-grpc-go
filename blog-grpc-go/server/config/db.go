@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/gomodule/redigo/redis"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -34,3 +35,5 @@ func ConnectDB() *mongo.Client {
 
 	return client
 }
+
+var Cache redis.Conn

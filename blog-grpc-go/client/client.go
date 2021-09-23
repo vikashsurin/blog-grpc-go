@@ -24,12 +24,12 @@ func main() {
 	// Certificates for tls
 	// Set up the credentials for the connection.
 	perRPC := oauth.NewOauthAccess(fetchToken())
-	creds, sslErr := credentials.NewClientTLSFromFile(data.Path("x509/server_cert.pem"), "www.localhost.com")
+	creds, sslErr := credentials.NewClientTLSFromFile(data.Path("x509/server_cert.pem"), "x.test.example.com")
 	if sslErr != nil {
 		log.Fatalf(("Erro while loading CA trust certificates: %v"), sslErr)
 	}
 
-	tls := false
+	tls := true
 	var opts []grpc.DialOption
 	if tls == true {
 		opts = []grpc.DialOption{
