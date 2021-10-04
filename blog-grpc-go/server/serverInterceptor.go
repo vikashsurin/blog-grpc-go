@@ -82,7 +82,7 @@ func valid(authorization []string) bool {
 	}
 	//extract token
 	token := strings.TrimPrefix(authorization[0], "Bearer ")
-
+	fmt.Println("TOKEN ", token)
 	// redis cache
 	response, err := config.Cache.Do("GET", token)
 	if err != nil {
@@ -108,7 +108,7 @@ func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	// if it is public it will skip the validation of token.
 	for _, v := range publicRPC {
 		if v == info.FullMethod {
-			fmt.Println("\n\nthis is a public RPC")
+			// fmt.Println("\n\nthis is a public RPC")
 			return handler(ctx, req)
 		}
 	}
@@ -117,7 +117,7 @@ func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	if !ok {
 		return nil, errMissingMetadata
 	}
-	fmt.Println("MD :: ", md)
+	// fmt.Println("MD :: ", md)
 	// The keys within metadata.MD are normalized to lowercase.
 	// See: https://godoc.org/google.golang.org/grpc/metadata#New
 	if !valid(md["authorization"]) {
@@ -132,7 +132,7 @@ func streamInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamS
 	log.Println("--> stream interceptor :: ", info.FullMethod)
 	for _, v := range publicRPC {
 		if v == info.FullMethod {
-			fmt.Println("this is a public RPC")
+			// fmt.Println("this is a public RPC")
 			return handler(srv, ss)
 		}
 	}

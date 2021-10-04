@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	blogpb "blog.com/protos/blogpb"
+	"blog.com/protos/blogpb"
 	"blog.com/server/config"
-
+	"blog.com/server/user"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
@@ -19,30 +19,37 @@ type Server struct {
 }
 
 type blogItem struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty"`
-	AuthorID string             `bson:"author_id"`
-	Content  string             `bson:"content"`
-	Title    string             `bson:"title"`
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	AuthorId  string             `bson:"author_id"`
+	FirstName string             `bson:"first_name"`
+	LastName  string             `bson:"last_name"`
+	Content   string             `bson:"content"`
+	Title     string             `bson:"title"`
 }
 
 var blogCollection = config.ConnectDB().Database("blogdb").Collection("blogs")
 
-// // BlogInit ...
-// func BlogInit() *grpc.Server {
-// 	s := grpc.NewServer()
-// 	blogpb.RegisterBlogServiceServer(s, &Server{})
-// 	return s
-// }
-
-// CreateBlog ...
 func (*Server) CreateBlog(ctx context.Context, req *blogpb.CreateBlogRequest) (*blogpb.CreateBlogResponse, error) {
-	fmt.Println("CREATE BLOG REQUEST :: ", req)
+
+	// * get admin detail from user package
+	admin, _ := user.GetAdmin(ctx)
+	fmt.Println("admin ", admin.ID.Hex())
+
+	/*
+
+	* data goes to mongodb
+	* admin is the logged_in_user
+	* admin is needed for AuthorId, FirstName  and LastName
+
+	 */
 	blog := req.GetBlog()
 
 	data := blogItem{
-		AuthorID: blog.GetAuthorId(),
-		Title:    blog.GetTitle(),
-		Content:  blog.GetContent(),
+		AuthorId:  admin.ID.Hex(),
+		FirstName: admin.FirstName,
+		LastName:  admin.LastName,
+		Title:     blog.GetTitle(),
+		Content:   blog.GetContent(),
 	}
 	res, err := blogCollection.InsertOne(context.Background(), data)
 	if err != nil {
@@ -55,15 +62,17 @@ func (*Server) CreateBlog(ctx context.Context, req *blogpb.CreateBlogRequest) (*
 	if !ok {
 		return nil, status.Errorf(
 			codes.Internal,
-			fmt.Sprintf("Cannot convert to OID"),
+			"Cannot convert to OID",
 		)
 	}
 	response := &blogpb.CreateBlogResponse{
 		Blog: &blogpb.Blog{
-			Id:       oid.Hex(),
-			AuthorId: blog.GetAuthorId(),
-			Title:    blog.GetTitle(),
-			Content:  blog.GetContent(),
+			Id:        oid.Hex(),
+			AuthorId:  admin.ID.Hex(),
+			FirstName: admin.FirstName,
+			LastName:  admin.LastName,
+			Title:     blog.GetTitle(),
+			Content:   blog.GetContent(),
 		},
 	}
 	return response, nil
@@ -101,10 +110,12 @@ func (*Server) ReadBlog(ctx context.Context, req *blogpb.ReadBlogRequest) (*blog
 
 func dataToBlogPb(data *blogItem) *blogpb.Blog {
 	return &blogpb.Blog{
-		Id:       data.ID.Hex(),
-		AuthorId: data.AuthorID,
-		Content:  data.Content,
-		Title:    data.Title,
+		Id:        data.ID.Hex(),
+		AuthorId:  data.AuthorId,
+		FirstName: data.FirstName,
+		LastName:  data.LastName,
+		Content:   data.Content,
+		Title:     data.Title,
 	}
 }
 
@@ -129,14 +140,14 @@ func (*Server) UpdateBlog(ctx context.Context, req *blogpb.UpdateBlogRequest) (*
 	}
 
 	// update internal struct
-	data.AuthorID = blog.GetAuthorId()
+	data.AuthorId = blog.GetAuthorId()
 	data.Content = blog.GetContent()
 	data.Title = blog.GetTitle()
 
 	updateRes, err := blogCollection.UpdateMany(context.Background(),
 		bson.M{"_id": oid},
 		bson.D{
-			{"$set", bson.D{{"author_id", data.AuthorID}}},
+			{"$set", bson.D{{"author_id", data.AuthorId}}},
 			{"$set", bson.D{{"content", data.Content}}},
 			{"$set", bson.D{{"title", data.Title}}},
 		})
@@ -174,29 +185,6 @@ func (*Server) DeleteBlog(ctx context.Context, req *blogpb.DeleteBlogRequest) (*
 	}, nil
 }
 
-// ListBlogAllBlogs ...
-func (*Server) ListBlog(req *blogpb.ListBlogRequest, stream blogpb.BlogService_ListBlogServer) error {
-	fmt.Println("LIST BLOG REQUEST :: ", req)
-	// cursor, err := blogCollection.Find(context.Background(), primitive.D{{}})
-	cursor, err := blogCollection.Find(context.Background(), primitive.D{{}})
-	if err != nil {
-		return status.Errorf(codes.Internal, fmt.Sprintf("Unknown Internal error : %v ", err))
-	}
-	defer cursor.Close(context.Background())
-	for cursor.Next(context.Background()) {
-		data := &blogItem{}
-		err := cursor.Decode(data)
-		if err != nil {
-			return status.Errorf(codes.Internal, fmt.Sprintf("Error while decoding data : %v", err))
-		}
-		stream.Send(&blogpb.ListBlogResponse{Blog: dataToBlogPb(data)})
-	}
-	if err := cursor.Err(); err != nil {
-		return status.Errorf(codes.Internal, fmt.Sprintf("Unknown Internal error : %v ", err))
-	}
-	return nil
-}
-
 // ListBlogByUserId ...
 func (*Server) ListBlogByUserId(req *blogpb.ListBlogRequestByUserId, stream blogpb.BlogService_ListBlogByUserIdServer) error {
 	fmt.Println("LIST BLOG REQUEST BY USER ID:: ", req)
@@ -214,6 +202,31 @@ func (*Server) ListBlogByUserId(req *blogpb.ListBlogRequestByUserId, stream blog
 			return status.Errorf(codes.Internal, fmt.Sprintf("Error while decoding data : %v", err))
 		}
 		stream.Send(&blogpb.ListBlogResponseByUserId{Blog: dataToBlogPb(data)})
+		fmt.Println("data ", data)
+	}
+	if err := cursor.Err(); err != nil {
+		return status.Errorf(codes.Internal, fmt.Sprintf("Unknown Internal error : %v ", err))
+	}
+	return nil
+}
+
+// ListBlogAllBlogs ...
+func (*Server) ListBlog(req *blogpb.ListBlogRequest, stream blogpb.BlogService_ListBlogServer) error {
+	fmt.Println("LIST BLOG REQUEST :: ", req)
+	// cursor, err := blogCollection.Find(context.Background(), primitive.D{{}})
+	cursor, err := blogCollection.Find(context.Background(), primitive.D{{}})
+	if err != nil {
+		return status.Errorf(codes.Internal, fmt.Sprintf("Unknown Internal error : %v ", err))
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		data := &blogItem{}
+		err := cursor.Decode(data)
+		if err != nil {
+			return status.Errorf(codes.Internal, fmt.Sprintf("Error while decoding data : %v", err))
+		}
+		stream.Send(&blogpb.ListBlogResponse{Blog: dataToBlogPb(data)})
+		fmt.Println("data ", data)
 	}
 	if err := cursor.Err(); err != nil {
 		return status.Errorf(codes.Internal, fmt.Sprintf("Unknown Internal error : %v ", err))

@@ -3,7 +3,7 @@ package user
 import (
 	"log"
 
-	userpb "blog.com/protos/userpb"
+	"blog.com/protos/userpb"
 	"blog.com/server/config"
 
 	"context"
@@ -42,8 +42,11 @@ func (*Server) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*
 		Email:     user.GetEmail(),
 		Password:  user.GetPassword(),
 	}
-	exist := userCollection.FindOne(context.Background(), bson.M{"email": data.Email})
-	if exist != nil {
+	exist, err := userCollection.CountDocuments(context.Background(), bson.M{"email": data.Email})
+	if err != nil {
+		return nil, status.Error(codes.Aborted, "there was an error")
+	}
+	if exist != 0 {
 		fmt.Println("user already exists")
 		return nil, status.Error(codes.AlreadyExists, "user already exists")
 	}
@@ -56,7 +59,7 @@ func (*Server) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*
 	if !ok {
 		return nil, status.Errorf(
 			codes.Internal,
-			fmt.Sprintf("Cannot convert to OID"),
+			"could not conver to OID",
 		)
 	}
 	response := &userpb.CreateUserResponse{
@@ -76,7 +79,7 @@ func (*Server) ReadUser(ctx context.Context, req *userpb.ReadUserRequest) (*user
 	userID := req.GetUserId()
 	oid, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("Cannot parse ID"))
+		return nil, status.Errorf(codes.InvalidArgument, "cannot parse ID")
 	}
 	data := &userItem{}
 	res := userCollection.FindOne(context.Background(), bson.M{"_id": oid})
@@ -100,7 +103,7 @@ func (*Server) UpdateUser(ctx context.Context, req *userpb.UpdateUserRequest) (*
 
 	oid, err := primitive.ObjectIDFromHex(user.GetId())
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("Cannot parse ID"))
+		return nil, status.Errorf(codes.InvalidArgument, "Cannot parse ID")
 	}
 
 	data := &userItem{}
@@ -143,7 +146,9 @@ func (*Server) UpdateUser(ctx context.Context, req *userpb.UpdateUserRequest) (*
 func (*Server) DeleteUser(ctx context.Context, req *userpb.DeleteUserRequest) (*userpb.DeleteUserResponse, error) {
 	oid, err := primitive.ObjectIDFromHex(req.UserId)
 	primitive.ErrParseInf.Error()
-
+	if err != nil {
+		status.Errorf(codes.Internal, "user not found")
+	}
 	deleteRes, err := userCollection.DeleteOne(context.Background(), bson.M{"_id": oid})
 	if err != nil {
 		log.Fatalln("error deleting the user ", err)
