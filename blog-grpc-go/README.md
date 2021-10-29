@@ -32,3 +32,13 @@
 - server listen on port :5000
 - envoy takes port :5000 from server and listen on port :8080 from client
 - client sends req on port :8080
+
+## start redis server
+
+- for local dev, it should be installed
+- command - `redis-server`
+
+## start mongodb server
+
+- for local dev, it should be installed
+- command - `mongod`
