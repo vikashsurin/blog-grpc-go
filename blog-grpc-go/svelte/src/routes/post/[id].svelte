@@ -1,5 +1,5 @@
 <script context="module">
-    import { fetchPost } from "../../store.js";
+    import { fetchPost } from "../../stores/postStore";
     export async function load(ctx) {
         let id = ctx.page.params.id;
         const post = await fetchPost(id);
@@ -20,7 +20,7 @@
 
     <div>
         <h2>{post.title}</h2>
-        <p>{post.author}</p>
+        <p>{post.firstName + " " + post.lastName}</p>
         <p>{post.content}</p>
     </div>
 {/if}

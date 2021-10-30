@@ -1,3 +1,4 @@
+import preprocess from "svelte-preprocess";
 /** @type {import('@sveltejs/kit').Config} */
 // import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
 // import commonjs from "@rollup/plugin-commonjs";
@@ -35,6 +36,10 @@ const config = {
     // hydrate the <div id="svelte"> element in src/app.html
     target: "#svelte",
   },
+
+  preprocess: [preprocess({
+    postcss: true
+  })]
 };
 
 export default config;

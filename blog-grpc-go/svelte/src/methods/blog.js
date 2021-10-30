@@ -12,18 +12,27 @@ import {
   BlogServicePromiseClient,
   // default:blog,
 } from "protos/blog_grpc_web_pb";
-
+import { authInterceptor } from "./interceptor";
 import { keys } from "../keys/keys";
+
 
 const host = keys.host;
 
-export var blogID = "5f8043e7f5edbb1673a50f48";
+// demo id for delete blog
+// export var blogID = "5f8043e7f5edbb1673a50f48";
 
-export const CreateBlog = async (author, title, content) => {
-  var client = new BlogServicePromiseClient(host, {"authorization":"09622b69-5e7c-44ca-8af2-46e95e800712"}, null);
+// * Interceptor 
+const opts = { 'unaryInterceptors': [new authInterceptor()] }
+
+/*
+ * CreateBlog
+ * @params title, content
+ * returns 
+*/
+export const CreateBlog = async (title, content) => {
+  var client = new BlogServicePromiseClient(host, null, opts);
 
   var blog = new Blog();
-  blog.setAuthorId(author);
   blog.setTitle(title);
   blog.setContent(content);
 
@@ -32,7 +41,7 @@ export const CreateBlog = async (author, title, content) => {
 
   try {
     const res = await client.createBlog(request, {});
-    console.log(res.getBlog().getId());
+
     return res;
   } catch (error) {
     console.log(error);
@@ -87,6 +96,7 @@ export const ListBlog = async () => {
 
   var request = new ListBlogRequest();
   var stream = await client.listBlog(request, {});
+
 
   return stream;
 };

@@ -1,5 +1,16 @@
+<!-- <script context="module">
+  export async function get(req) {
+    return {
+      status: 302,
+      headers: {
+        location: "/",
+      },
+    };
+  }
+</script> -->
 <script>
-  import { logIn } from "../authStore";
+  import { logIn } from "../stores/authStore";
+
   let email = "",
     password = "";
 
@@ -16,21 +27,26 @@
 </script>
 
 <div>
-  <form on:submit|preventDefault={handleSubmit}>
+  <form class="form" on:submit|preventDefault={handleSubmit}>
     <ul>
       <li>
         <label for="email">Email</label>
-        <input name="email" type="text" bind:value={email} />
+        <input class="border-2" name="email" type="text" bind:value={email} />
       </li>
       <li>
         <label for="password">Password</label>
-        <input name="password" type="password" bind:value={password} />
+        <input
+          class="border-2"
+          name="password"
+          type="password"
+          bind:value={password}
+        />
       </li>
     </ul>
     {#if error}
       <p>invalid credentials</p>
     {/if}
-    <button type="submit">Login</button>
+    <button class="bg-pink" type="submit">Login</button>
   </form>
   <p>or</p>
   <button>

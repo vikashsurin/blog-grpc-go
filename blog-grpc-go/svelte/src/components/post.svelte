@@ -2,16 +2,12 @@
   export let post;
 </script>
 
-<div>
-  <a href={`/post/${post.id}`}>
-    <h2>{post.title}</h2>
-    <p>{post.content}</p>
-  </a>
+<div class="flex justify-center">
+  <div class="p-10 m-2 border-2 w-1/2 filter drop-shadow-xl">
+    <a href={`/post/${post.id}`}>
+      <h2>{post.title}</h2>
+      <p>{post.content}</p>
+      <small>author {post.firstName + post.lastName}</small>
+    </a>
+  </div>
 </div>
-
-<style>
-  div {
-    border: 1px solid black;
-    margin-bottom: 10px;
-  }
-</style>

@@ -1,16 +1,11 @@
 <script>
-  import { writable } from "svelte/store";
-  import { createPost } from "../store.js";
-  const post = writable({
-    id: "",
-    author: "",
-    title: "",
-    content: "",
-  });
+  import { createPost } from "../stores/postStore";
+
+  let title = "",
+    content = "";
 
   function handleSubmit() {
-    createPost($post);
-    $post = {};
+    createPost(title, content);
   }
 </script>
 
@@ -18,22 +13,11 @@
   <h1>Add a Post</h1>
 
   <form on:submit|preventDefault={handleSubmit}>
-    <input
-      type="text"
-      name="author"
-      placeholder="author"
-      bind:value={$post.author}
-    />
-    <input
-      type="text"
-      name="title"
-      bind:value={$post.title}
-      placeholder="title"
-    />
+    <input type="text" name="title" bind:value={title} placeholder="title" />
     <input
       type="text"
       name="content"
-      bind:value={$post.content}
+      bind:value={content}
       placeholder="content"
     />
     <button type="submit">submit</button>

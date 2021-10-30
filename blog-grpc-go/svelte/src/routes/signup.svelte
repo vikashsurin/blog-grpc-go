@@ -1,5 +1,5 @@
 <script>
-  import { createUsers } from "../userStrore";
+  import { createUsers } from "../stores/userStrore";
 
   let user = {
     firstName: "",

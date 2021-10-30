@@ -1,5 +1,5 @@
 <script context="module">
-  import { fetchAllPostForUser, postlist } from "../store";
+  import { fetchAllPostForUser, postlist } from "../stores/postStore";
   export async function load(ctx) {
     let userId = "silky";
     fetchAllPostForUser(userId);
@@ -8,7 +8,7 @@
 </script>
 
 <script>
-  import { postListByUser } from "../store";
+  import { postListByUser } from "../stores/postStore";
 </script>
 
 <h1>Dashboard</h1>

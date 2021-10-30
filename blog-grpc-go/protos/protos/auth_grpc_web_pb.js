@@ -230,5 +230,85 @@ proto.auth.AuthServicePromiseClient.prototype.logout =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.auth.isLoggedInRequest,
+ *   !proto.auth.isLoggedInResponse>}
+ */
+const methodDescriptor_AuthService_IsLoggedIn = new grpc.web.MethodDescriptor(
+  '/auth.AuthService/IsLoggedIn',
+  grpc.web.MethodType.UNARY,
+  proto.auth.isLoggedInRequest,
+  proto.auth.isLoggedInResponse,
+  /**
+   * @param {!proto.auth.isLoggedInRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.auth.isLoggedInResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.auth.isLoggedInRequest,
+ *   !proto.auth.isLoggedInResponse>}
+ */
+const methodInfo_AuthService_IsLoggedIn = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.auth.isLoggedInResponse,
+  /**
+   * @param {!proto.auth.isLoggedInRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.auth.isLoggedInResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.auth.isLoggedInRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.auth.isLoggedInResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.auth.isLoggedInResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.auth.AuthServiceClient.prototype.isLoggedIn =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/auth.AuthService/IsLoggedIn',
+      request,
+      metadata || {},
+      methodDescriptor_AuthService_IsLoggedIn,
+      callback);
+};
+
+
+/**
+ * @param {!proto.auth.isLoggedInRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.auth.isLoggedInResponse>}
+ *     Promise that resolves to the response
+ */
+proto.auth.AuthServicePromiseClient.prototype.isLoggedIn =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/auth.AuthService/IsLoggedIn',
+      request,
+      metadata || {},
+      methodDescriptor_AuthService_IsLoggedIn);
+};
+
+
 module.exports = proto.auth;
 

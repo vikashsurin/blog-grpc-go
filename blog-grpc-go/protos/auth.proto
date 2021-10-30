@@ -9,7 +9,15 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  string token = 1;
+  string firstName = 1;
+  string lastName =2;
+  string token = 3;
+}
+
+message isLoggedInRequest{
+}
+message isLoggedInResponse{
+  bool  isLoggedIn = 1;
 }
 message LogoutRequest {}
 
@@ -18,4 +26,5 @@ message LogoutResponse {}
 service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc Logout(LogoutRequest) returns (LogoutResponse);
+  rpc IsLoggedIn(isLoggedInRequest) returns (isLoggedInResponse);
 }

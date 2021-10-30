@@ -1,21 +1,23 @@
 import { writable } from "svelte/store";
 import { IsLoggedIn, Login } from '../methods/auth'
 
+/*
+ *  checks if the user is loggedIn or not
+ */
+
 export const authenticated = writable(false)
 
-export const user = writable({
-    name: "",
-    email: "",
-})
+// export const user = writable({
+//     name: "",
+//     email: "",
+// })
 export const logIn = async (email, password) => {
     try {
         const loginRes = await Login(email, password)
-        console.log(loginRes.getToken(), loginRes.getFirstname())
 
         if (loginRes.getToken()) {
             authenticated.set(true)
-            user.set({ name: loginRes.getFirstname(), email: email })
-            console.log("user", user)
+            // user.set({ name: loginRes.getFirstname(), email: email })
             return true
         }
     } catch (error) {
@@ -26,7 +28,7 @@ export const logIn = async (email, password) => {
 export const getLoginState = async () => {
     try {
         const isLoggedIn = await IsLoggedIn()
-        console.log("login State ", isLoggedIn.getIsloggedin())
+        authenticated.set(true)
     } catch (error) {
         console.log(error)
     }
